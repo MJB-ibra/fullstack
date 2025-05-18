@@ -63,14 +63,16 @@ const Admin = () => {
 
                     <nav>
                         <ul>
-                            <li><a href="/admin/users">Manage Users</a></li>
+                            <li><a href="/product">product</a></li>
                             <li><a href="/admin/reports">View Reports</a></li>
-                            <li><a href="/admin/settings">Settings</a></li>
+                            <li><a href="/productIn">Product In</a></li>
+                            <li><a href="/productOut">Product Out</a></li>
+
                         </ul>
                         <button onClick={Logout}>Logout</button>
                     </nav>
                     <div>
-                        <p>Back to <a href="/">Home</a></p>
+            
                         <p>Need help? <a href="/help">Visit Help Center</a></p>
                     </div>
                 </div>

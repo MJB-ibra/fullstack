@@ -111,6 +111,86 @@ app.get('/admin',verifyToken,(req,res)=>{
     res.status(200).json({ message: 'Welcome to the admin page', user: req.user ,success: true });
 })
 
+//Add product router
+
+app.post('/insert/product', (req, res) => {
+    const { name } = req.body;
+    if (!name) {
+        return res.status(400).json({ error: 'Product name is required.', success: false });
+    }
+    const sql = "INSERT INTO products(productName) VALUES (?)";
+    db.query(sql, [name], (err, result) => {
+        if (err) {
+            console.error('Error inserting product:', err);
+            return res.status(500).json({ error: 'Database error', success: false });
+        }
+        res.status(200).json({ message: 'Product added successfully', result, success: true });
+    });
+}
+);
+
+//select product
+
+app.get('/products', (req, res) => {
+    const sql = "SELECT * FROM products";
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error fetching products:', err);
+            return res.status(500).json({ error: 'Database error', success: false });
+        }
+        res.status(200).json({ products: result, success: true });
+    });
+});
+
+//get product 
+
+app.get('/get/product', (req, res) => {
+    const sql = "SELECT * FROM products";
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error fetching products:', err);
+            return res.status(500).json({ error: 'Database error', success: false });
+        }
+        res.status(200).json(result);
+    });
+}
+);
+
+//insert stock in
+app.post('/insert/stockIn', (req, res) => {
+    const { productCode, quantity, price } = req.body;
+    const totalPrice = quantity * price;
+    if (!productCode || !quantity || !price) {
+        return res.status(400).json({ error: 'Product code, quantity, and price are required.', success: false });
+    }
+    const sql = "INSERT INTO productIn(productCode, Qauntity, unitPrice,totalPrice) VALUES (?, ?, ?,?)";
+    db.query(sql, [productCode, quantity, price,totalPrice], (err, result) => {
+        if (err) {
+            console.error('Error inserting stock:', err);
+            return res.status(500).json({ error: 'Database error', success: false });
+        }
+        res.status(200).json({ message: 'Stock updated successfully', result, success: true });
+    });
+});
+
+//select from productIn
+app.get('/productIn', (req, res) => {
+    const { code } = req.query;
+    const sql = "SELECT * FROM productIn WHERE productCode = ?";
+    db.query(sql, [code], (err, result) => {
+        if (err) {
+            console.error('Error fetching stock:', err);
+            return res.status(500).json({ error: 'Database error', success: false });
+        }
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'No stock found for this product code', success: false });
+        }
+        // Return the first stock record
+        res.status(200).json({ stock: result, success: true });
+    });
+});
+
+
 
 //logout router
 app.get('/logout', (req, res) => {
